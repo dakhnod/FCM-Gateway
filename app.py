@@ -10,6 +10,8 @@ try:
 except KeyError:
     raise RuntimeError("Missing FCM_TOKEN from env")
 timeout = os.environ.get('TIMEOUT')
+if timeout is not None:
+    timeout = int(timeout)
 
 app = quart.Quart(__name__)
 app.cli.allow_extra_args = True

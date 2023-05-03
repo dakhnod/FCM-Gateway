@@ -23,9 +23,13 @@ async def app_setup():
     app.http.client = aiohttp.ClientSession()
     app.cache = {}
 
+def dict_filter(data, keys):
+    return {data[key] for key in keys}
+
 @app.post('/api/fcm/send')
 async def api_send():
     data = await quart.request.json
+    data = dict_filter(data, ['type', 'to', 'data', 'notification'])
     to = data['to']
     if timeout is not None:
         now = time.time()

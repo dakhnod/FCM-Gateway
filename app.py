@@ -35,7 +35,7 @@ async def api_send():
     data = dict_filter(data, ['type', 'to', 'data', 'notification'])
     to = data['to']
     token = quart.request.headers.get('Authorization')
-    throttled = (token is None) or (token != f'Bearer {api_token}')
+    throttled = (token is None) or (api_token is None) or (token != f'Bearer {api_token}')
     if throttled and (timeout is not None):
         now = time.time()
         try:

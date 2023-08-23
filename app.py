@@ -9,6 +9,9 @@ try:
     fcm_token = os.environ['FCM_TOKEN']
 except KeyError:
     raise RuntimeError("Missing FCM_TOKEN from env")
+
+api_token = os.environ.get('API_TOKEN')
+
 timeout = os.environ.get('TIMEOUT')
 if timeout is not None:
     timeout = int(timeout)
@@ -27,7 +30,9 @@ async def app_setup():
 async def api_send():
     data = await quart.request.json
     to = data['to']
-    if timeout is not None:
+    token = quart.request.headers.get('Authorization')
+    throttled = (token is None) or (token != f'Bearer {api_token}')
+    if throttled and (timeout is not None):
         now = time.time()
         try:
             time_last = app.cache[to]
